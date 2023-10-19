@@ -30,11 +30,11 @@ class ColaEspera:
 
     def agregar(self, paciente):
         self.pacientes.append(paciente)
-        self.pacientes.sort(reverse=True)  # Ordenar de mayor a menor riesgo
+        self.pacientes.sort(key=lambda x: x[0])  # Ordenar por riesgo (el primer elemento de la tupla)
 
     def extraer(self):
         if self.pacientes:
-            return self.pacientes.pop(0)  # Cambiado a pop(0) para sacar al paciente más antiguo
+            return self.pacientes.pop(0)  # Sacar al paciente más antiguo
         else:
             return None
 
@@ -59,16 +59,45 @@ if __name__ == "__main__":
         cola_de_espera.agregar((paciente.get_riesgo(), paciente))
 
         # Atención de paciente en este ciclo
-        paciente_atendido = cola_de_espera.extraer()
-        if paciente_atendido:
-            # Se atiende al paciente más crítico
-            paciente_atendido = paciente_atendido[1]
-            print('*' * 40)
-            print(str(paciente_atendido))
-            print('*' * 40)
+        if random.random() < 0.5:
+            # Se atiende al paciente que se encuentra al frente de la cola
+            paciente_atendido = cola_de_espera.extraer()
+            if paciente_atendido:
+                print('*' * 40)
+                print('Se atiende el paciente:', paciente_atendido[1])
+                print('*' * 40)
+        else:
+            # Se continúa atendiendo al paciente del ciclo anterior
+            pass
+
+        # Mostrar pacientes restantes en la cola de espera
+        print("Pacientes en espera:")
+        for paciente_en_espera in cola_de_espera.pacientes:
+            print(paciente_en_espera[1])
+
+        # Imprimir la cantidad de pacientes que faltan por atender
+        print('Pacientes que faltan atenderse:', len(cola_de_espera.pacientes))
 
         print()
         print('*--*--*--*--*--*--*--*--*--*--*--*--*--*--*-')
+
+        time.sleep(1)
+
+    # Después de atender a todos los pacientes en la simulación inicial, se atienden a los pacientes restantes
+    while cola_de_espera.pacientes:
+        paciente_atendido = cola_de_espera.extraer()
+        if paciente_atendido:
+            print('*' * 40)
+            print('Se atiende el paciente:', paciente_atendido[1])
+            print('*' * 40)
+
+        # Mostrar pacientes restantes en la cola de espera
+        print("Pacientes en espera:")
+        for paciente_en_espera in cola_de_espera.pacientes:
+            print(paciente_en_espera[1])
+
+        # Imprimir la cantidad de pacientes que faltan por atender
+        print('Pacientes que faltan atenderse:', len(cola_de_espera.pacientes))
 
         time.sleep(1)
 
